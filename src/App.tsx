@@ -1,9 +1,10 @@
 import React from 'react';
+import Dashboard from './components';
 
 function App() {
   return (
     <div className="App">
-      <p>Hello World</p>
+      <Dashboard />
     </div>
   );
 }
