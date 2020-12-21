@@ -7,7 +7,7 @@ const Dashboard = () => {
   console.log('metrics: ', metrics);
   return (
     <div>
-      <Chart />
+      <Chart metrics={metrics} />
     </div>
   );
 };

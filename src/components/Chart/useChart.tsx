@@ -1,18 +1,9 @@
+import { MetricsType } from 'api/Api';
 import { useState } from 'react';
 
-interface ChartOptions {
-  xAxis?: {
-    categories: string[];
-  };
-  series: [
-    {
-      data: number[];
-    },
-  ];
-}
-
-const useChart = () => {
-  const [chartOptions] = useState<ChartOptions>({
+const useChart = (metrics: MetricsType) => {
+  console.log('metrics: ', metrics);
+  const [chartOptions] = useState({
     xAxis: {
       categories: ['A', 'B', 'C'],
     },
