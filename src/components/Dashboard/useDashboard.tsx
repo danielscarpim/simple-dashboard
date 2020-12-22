@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
-import { fetchMetrics, MetricsType } from 'api/Api';
+import { fetchMetrics, Metrics, fetchFilters, Filters } from 'api/Api';
 
 const useDashboard = () => {
-  const [metrics, setMetrics] = useState<MetricsType>();
-  const [filteredMetrics, setFilteredMetrics] = useState<MetricsType>();
-  const [filters, setFilters] = useState();
+  const [metrics, setMetrics] = useState<Metrics>();
+  const [filteredMetrics, setFilteredMetrics] = useState<Metrics>();
+  const [filters, setFilters] = useState<Filters>();
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchMetrics();
-      console.log('data: ', data);
-      setMetrics(data);
+      const metricsData = await fetchMetrics();
+      const filtersData = await fetchFilters();
+      console.log('filtersData: ', filtersData);
+      setMetrics(metricsData);
+      setFilters(filtersData);
     };
     fetchData();
   }, []);

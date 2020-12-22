@@ -1,10 +1,15 @@
 import React from 'react';
-import { Chart } from 'components';
+import { Chart, Filter } from 'components';
 import useDashboard from './useDashboard';
 
 const Dashboard = () => {
-  const { metrics } = useDashboard();
-  return <div>{metrics && <Chart metrics={metrics} />}</div>;
+  const { metrics, filters } = useDashboard();
+  return (
+    <div>
+      {filters && <Filter filters={filters} />}
+      {metrics && <Chart metrics={metrics} />}
+    </div>
+  );
 };
 
 export default Dashboard;
