@@ -25,6 +25,7 @@ export const fetchFilters = async (): Promise<Filters> => {
         header: true,
         delimiter: ',',
         dynamicTyping: true,
+        fastMode: true,
         complete: (results) => {
           const campaigns = Array.from(Object.keys(_.groupBy(results.data, 'Campaign')));
           const dataSources = Array.from(Object.keys(_.groupBy(results.data, 'Datasource')));
@@ -37,7 +38,7 @@ export const fetchFilters = async (): Promise<Filters> => {
   });
 };
 
-export const fetchMetrics = async (): Promise<Metrics> => {
+export const fetchMetrics = async (filter?: ActiveFilters): Promise<Metrics> => {
   return new Promise((resolve, reject) => {
     try {
       Papa.parse('api/data.csv', {
@@ -45,10 +46,12 @@ export const fetchMetrics = async (): Promise<Metrics> => {
         header: true,
         delimiter: ',',
         dynamicTyping: true,
+        fastMode: true,
         complete: (results) => {
-          const byDate = _.groupBy(results.data, 'Date') as Record<string, MetricsData[]>;
-          const metrics = mergeDates(byDate);
-          resolve(metrics);
+          const metrics = filter ? _.filter(results.data, filter) : results.data;
+          const byDate = _.groupBy(metrics, 'Date') as Record<string, MetricsData[]>;
+          const mergedMetrics = mergeDates(byDate);
+          resolve(mergedMetrics);
         },
       });
     } catch (error) {
@@ -60,6 +63,11 @@ export const fetchMetrics = async (): Promise<Metrics> => {
 export type Filters = {
   dataSources: string[];
   campaigns: string[];
+};
+
+export type ActiveFilters = {
+  Campaign?: string;
+  Datasource?: string;
 };
 
 export type MetricsData = {

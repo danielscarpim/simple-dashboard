@@ -3,10 +3,10 @@ import { Chart, Filter } from 'components';
 import useDashboard from './useDashboard';
 
 const Dashboard = () => {
-  const { metrics, filters } = useDashboard();
+  const { metrics, filters, handleFilterChange } = useDashboard();
   return (
     <div>
-      {filters && <Filter filters={filters} />}
+      {filters && <Filter filters={filters} handleFilterChange={handleFilterChange} />}
       {metrics && <Chart metrics={metrics} />}
     </div>
   );
