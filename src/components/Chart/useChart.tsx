@@ -5,9 +5,10 @@ const useChart = (metrics: MetricsType) => {
   console.log('metrics: ', metrics);
   const [chartOptions] = useState({
     xAxis: {
-      categories: ['A', 'B', 'C'],
+      categories: Array.from(Object.keys(metrics)),
     },
     series: [{ data: [1, 2, 3] }],
+    // series: [{ data: [1, 2, 3] }],
   });
 
   return {
