@@ -1,15 +1,12 @@
 import { useEffect, useState, ChangeEvent } from 'react';
 import { fetchMetrics, Metrics, fetchFilters, Filters, ActiveFilters } from 'api/Api';
+import { OnChangeProps } from 'components/Filter/filter';
 
 const useDashboard = () => {
   const [metrics, setMetrics] = useState<Metrics>();
   const [filters, setFilters] = useState<Filters>();
-  const [activeFilters, setActiveFilters] = useState<ActiveFilters>();
   const [campaignFilter, setCampaignFilter] = useState<string | null>(null);
-  const handleFilterChange = (event: ChangeEvent<Record<string, unknown>>, value: string | null) => {
-    console.log('value: ', value);
-    setCampaignFilter(value);
-  };
+  const [sourceFilter, setSourceFilter] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,17 +20,23 @@ const useDashboard = () => {
 
   useEffect(() => {
     const fetchFilteredMetrics = async () => {
+      const activeFilters = {
+        Campaign: campaignFilter,
+        Datasource: sourceFilter,
+      };
       const metricsData = await fetchMetrics(activeFilters);
       setMetrics(metricsData);
     };
     fetchFilteredMetrics();
-  }, [activeFilters]);
+  }, [campaignFilter, sourceFilter]);
 
   return {
     metrics,
     filters,
-    handleFilterChange,
     campaignFilter,
+    setCampaignFilter,
+    sourceFilter,
+    setSourceFilter,
   };
 };
 

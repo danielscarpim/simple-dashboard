@@ -38,6 +38,12 @@ export const fetchFilters = async (): Promise<Filters> => {
   });
 };
 
+const filterMetrics = (metrics: MetricsData[], filter: ActiveFilters) => {
+  console.log('filter: ', filter);
+  const filteredMetrics = _.filter(metrics, filter);
+  console.log('filteredMetrics: ', filteredMetrics);
+};
+
 export const fetchMetrics = async (filter?: ActiveFilters): Promise<Metrics> => {
   return new Promise((resolve, reject) => {
     try {
@@ -48,6 +54,8 @@ export const fetchMetrics = async (filter?: ActiveFilters): Promise<Metrics> => 
         dynamicTyping: true,
         fastMode: true,
         complete: (results) => {
+          const rawMetrics = results.data as MetricsData[];
+          if (filter) filterMetrics(rawMetrics, filter);
           const metrics = filter ? _.filter(results.data, filter) : results.data;
           const byDate = _.groupBy(metrics, 'Date') as Record<string, MetricsData[]>;
           const mergedMetrics = mergeDates(byDate);
@@ -66,8 +74,8 @@ export type Filters = {
 };
 
 export type ActiveFilters = {
-  Campaign?: string;
-  Datasource?: string;
+  Campaign: string | null;
+  Datasource: string | null;
 };
 
 export type MetricsData = {
