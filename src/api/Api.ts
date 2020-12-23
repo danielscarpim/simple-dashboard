@@ -45,7 +45,7 @@ export const fetchMetrics = async (activeFilters?: ActiveFilters): Promise<Metri
           const rawMetrics = results.data as MetricsData[];
           const filteredMetrics: MetricsData[] = activeFilters?.length
             ? filterMetrics(rawMetrics, activeFilters)
-            : (results.data as MetricsData[]);
+            : (rawMetrics as MetricsData[]);
           const filters = getFilters(filteredMetrics);
           const byDate = _.groupBy(filteredMetrics, 'Date') as Record<string, MetricsData[]>;
           const metrics = mergeDates(byDate);
