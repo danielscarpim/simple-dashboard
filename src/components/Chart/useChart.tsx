@@ -26,8 +26,23 @@ const useChart = (metrics: Metrics) => {
 
   useEffect(() => {
     const chart = {
+      chart: {
+        zoomType: 'x',
+      },
+      title: {
+        text: '',
+      },
       xAxis: {
         categories: Array.from(Object.keys(metrics)),
+        type: 'datetime',
+      },
+      yAxis: {
+        title: {
+          text: '',
+        },
+        labels: {
+          enabled: true,
+        },
       },
       series: getSeries(),
     };
