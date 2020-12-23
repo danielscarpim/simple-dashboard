@@ -17,27 +17,6 @@ const mergeDates = (metrics: Record<string, MetricsData[]>) => {
   return mergedDates;
 };
 
-export const fetchFilters = async (): Promise<Filters> => {
-  return new Promise((resolve, reject) => {
-    try {
-      Papa.parse('api/data.csv', {
-        download: true,
-        header: true,
-        delimiter: ',',
-        dynamicTyping: true,
-        fastMode: true,
-        complete: (results) => {
-          const campaigns = Array.from(Object.keys(_.groupBy(results.data, 'Campaign')));
-          const dataSources = Array.from(Object.keys(_.groupBy(results.data, 'Datasource')));
-          resolve({ campaigns, dataSources });
-        },
-      });
-    } catch (error) {
-      reject(new Error(error));
-    }
-  });
-};
-
 const filterMetrics = (metrics: MetricsData[], activeFilters: ActiveFilters, nextFilter?: number) => {
   let currentFilter = nextFilter || 0;
   let filteredMetrics = _.filter(metrics, activeFilters[currentFilter]) as MetricsData[];
@@ -47,7 +26,13 @@ const filterMetrics = (metrics: MetricsData[], activeFilters: ActiveFilters, nex
   return filteredMetrics;
 };
 
-export const fetchMetrics = async (activeFilters?: ActiveFilters): Promise<Metrics> => {
+const getFilters = (metrics: MetricsData[]) => {
+  const campaigns = Array.from(Object.keys(_.groupBy(metrics, 'Campaign')));
+  const dataSources = Array.from(Object.keys(_.groupBy(metrics, 'Datasource')));
+  return { campaigns, dataSources };
+};
+
+export const fetchMetrics = async (activeFilters?: ActiveFilters): Promise<MetricsResponse> => {
   return new Promise((resolve, reject) => {
     try {
       Papa.parse('api/data.csv', {
@@ -58,10 +43,13 @@ export const fetchMetrics = async (activeFilters?: ActiveFilters): Promise<Metri
         fastMode: true,
         complete: (results) => {
           const rawMetrics = results.data as MetricsData[];
-          const metrics = activeFilters?.length ? filterMetrics(rawMetrics, activeFilters) : results.data;
-          const byDate = _.groupBy(metrics, 'Date') as Record<string, MetricsData[]>;
-          const mergedMetrics = mergeDates(byDate);
-          resolve(mergedMetrics);
+          const filteredMetrics: MetricsData[] = activeFilters?.length
+            ? filterMetrics(rawMetrics, activeFilters)
+            : (results.data as MetricsData[]);
+          const filters = getFilters(filteredMetrics);
+          const byDate = _.groupBy(filteredMetrics, 'Date') as Record<string, MetricsData[]>;
+          const metrics = mergeDates(byDate);
+          resolve({ metrics, filters });
         },
       });
     } catch (error) {
@@ -85,3 +73,8 @@ export type MetricsData = {
   Impressions: number;
 };
 export type Metrics = Record<string, MetricsData>;
+
+export type MetricsResponse = {
+  metrics: Metrics;
+  filters: Filters;
+};
