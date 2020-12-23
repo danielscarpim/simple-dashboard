@@ -1,11 +1,12 @@
 import React from 'react';
+import { Container } from '@material-ui/core';
 import { Dashboard } from './components';
 
 function App() {
   return (
-    <div className="App">
+    <Container fixed>
       <Dashboard />
-    </div>
+    </Container>
   );
 }
 
