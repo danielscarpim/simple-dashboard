@@ -8,15 +8,6 @@ const useDashboard = () => {
   const [sourceFilter, setSourceFilter] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const metricsData = await fetchMetrics();
-      setMetrics(metricsData.metrics);
-      setFilters(metricsData.filters);
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     const fetchFilteredMetrics = async () => {
       const activeFilters: ActiveFilters = [];
       if (campaignFilter) activeFilters.push({ Campaign: campaignFilter });
