@@ -1,6 +1,6 @@
 import { Metrics } from 'api/Api';
 import _ from 'lodash';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const useChart = (metrics: Metrics) => {
   const getSeries = () => {
@@ -17,12 +17,22 @@ const useChart = (metrics: Metrics) => {
     return series;
   };
 
-  const [chartOptions] = useState({
+  const [chartOptions, setChartOptions] = useState({
     xAxis: {
-      categories: Array.from(Object.keys(metrics)),
+      categories: [''],
     },
     series: getSeries(),
   });
+
+  useEffect(() => {
+    const chart = {
+      xAxis: {
+        categories: Array.from(Object.keys(metrics)),
+      },
+      series: getSeries(),
+    };
+    setChartOptions(chart);
+  }, [metrics]);
 
   return {
     chartOptions,

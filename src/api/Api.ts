@@ -38,13 +38,16 @@ export const fetchFilters = async (): Promise<Filters> => {
   });
 };
 
-const filterMetrics = (metrics: MetricsData[], filter: ActiveFilters) => {
-  console.log('filter: ', filter);
-  const filteredMetrics = _.filter(metrics, filter);
-  console.log('filteredMetrics: ', filteredMetrics);
+const filterMetrics = (metrics: MetricsData[], activeFilters: ActiveFilters, nextFilter?: number) => {
+  let currentFilter = nextFilter || 0;
+  let filteredMetrics = _.filter(metrics, activeFilters[currentFilter]) as MetricsData[];
+  if (currentFilter < activeFilters.length - 1) {
+    filteredMetrics = filterMetrics(filteredMetrics, activeFilters, (currentFilter = +1));
+  }
+  return filteredMetrics;
 };
 
-export const fetchMetrics = async (filter?: ActiveFilters): Promise<Metrics> => {
+export const fetchMetrics = async (activeFilters?: ActiveFilters): Promise<Metrics> => {
   return new Promise((resolve, reject) => {
     try {
       Papa.parse('api/data.csv', {
@@ -55,8 +58,7 @@ export const fetchMetrics = async (filter?: ActiveFilters): Promise<Metrics> => 
         fastMode: true,
         complete: (results) => {
           const rawMetrics = results.data as MetricsData[];
-          if (filter) filterMetrics(rawMetrics, filter);
-          const metrics = filter ? _.filter(results.data, filter) : results.data;
+          const metrics = activeFilters?.length ? filterMetrics(rawMetrics, activeFilters) : results.data;
           const byDate = _.groupBy(metrics, 'Date') as Record<string, MetricsData[]>;
           const mergedMetrics = mergeDates(byDate);
           resolve(mergedMetrics);
@@ -73,10 +75,7 @@ export type Filters = {
   campaigns: string[];
 };
 
-export type ActiveFilters = {
-  Campaign: string | null;
-  Datasource: string | null;
-};
+export type ActiveFilters = Record<string, string | null>[];
 
 export type MetricsData = {
   Date?: string;

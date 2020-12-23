@@ -1,6 +1,5 @@
-import { useEffect, useState, ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchMetrics, Metrics, fetchFilters, Filters, ActiveFilters } from 'api/Api';
-import { OnChangeProps } from 'components/Filter/filter';
 
 const useDashboard = () => {
   const [metrics, setMetrics] = useState<Metrics>();
@@ -20,10 +19,9 @@ const useDashboard = () => {
 
   useEffect(() => {
     const fetchFilteredMetrics = async () => {
-      const activeFilters = {
-        Campaign: campaignFilter,
-        Datasource: sourceFilter,
-      };
+      const activeFilters: ActiveFilters = [];
+      if (campaignFilter) activeFilters.push({ Campaign: campaignFilter });
+      if (sourceFilter) activeFilters.push({ Datasource: sourceFilter });
       const metricsData = await fetchMetrics(activeFilters);
       setMetrics(metricsData);
     };

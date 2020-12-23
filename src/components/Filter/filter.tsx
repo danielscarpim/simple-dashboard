@@ -1,15 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { Filters } from 'api/Api';
-import { FormControl, Typography, InputLabel, MenuItem, Select, Box, TextField } from '@material-ui/core';
-import { Autocomplete, AutocompleteChangeDetails, AutocompleteChangeReason } from '@material-ui/lab';
-
-export type OnChangeProps = (
-  event: ChangeEvent<Record<string, unknown>>,
-  value: string | null,
-  reason: AutocompleteChangeReason,
-  details: AutocompleteChangeDetails<string> | undefined,
-) => void;
+import { FormControl, Typography, Box, TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 interface FilterProps {
   filters: Filters;
