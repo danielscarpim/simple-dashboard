@@ -1,4 +1,4 @@
-# Simple Interactive Dashboard
+# [Simple Interactive Dashboard](https://danielscarpim.github.io/simple-dashboard/)
 
 It is possible to interact with the chart by:
 - Changing either or both filters below the chart.
